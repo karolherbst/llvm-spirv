@@ -909,6 +909,51 @@ protected:
   std::vector<SPIRVId> Pairs;
 };
 
+class SPIRVLoopMerge : public SPIRVInstruction {
+public:
+  static const Op OC = OpLoopMerge;
+  // Complete constructor
+  SPIRVLoopMerge(SPIRVBasicBlock *MergeBB, SPIRVBasicBlock *ContinueBB, SPIRVBasicBlock *TheBB)
+    : SPIRVInstruction(4, OC, TheBB), MergeId(MergeBB->getId()), ContinueId(ContinueBB->getId()),
+      LoopControl(0) {
+    validate();
+    assert(TheBB && "Invalid BB");
+  }
+  // Incomplete constructor
+  SPIRVLoopMerge() : SPIRVInstruction(OC), MergeId(SPIRVID_INVALID),
+      ContinueId(SPIRVID_INVALID), LoopControl(0) {
+    setHasNoId();
+    setHasNoType();
+  }
+
+  SPIRVValue *getMerge() const {
+    return getValue(MergeId);
+  }
+
+  SPIRVValue *getContinue() const {
+    return getValue(ContinueId);
+  }
+
+  SPIRVWord getLoopControl() const {
+    return LoopControl;
+  }
+
+protected:
+  _SPIRV_DEF_ENCDEC3(MergeId, ContinueId, LoopControl)
+
+  void validate() const {
+    SPIRVInstruction::validate();
+    assert(WordCount == 4);
+    assert(OpCode == OC);
+    assert(getMerge()->isBasicBlock());
+    assert(getContinue()->isBasicBlock());
+  }
+
+  SPIRVId MergeId;
+  SPIRVId ContinueId;
+  SPIRVWord LoopControl;
+};
+
 class SPIRVCompare:public SPIRVInstTemplateBase {
 protected:
   void validate()const {

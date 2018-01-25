@@ -272,6 +272,8 @@ public:
     = 0;
   virtual SPIRVInstruction *addPhiInst(SPIRVType *, std::vector<SPIRVValue *>,
       SPIRVBasicBlock *) = 0;
+  virtual SPIRVInstruction *addLoopMergeInstr(SPIRVBasicBlock *MergeBB,
+      SPIRVBasicBlock *ContinueBB, SPIRVBasicBlock *BB) = 0;
   virtual SPIRVInstruction *addReturnInst(SPIRVBasicBlock *) = 0;
   virtual SPIRVInstruction *addReturnValueInst(SPIRVValue *, SPIRVBasicBlock *)
     = 0;
