@@ -274,6 +274,8 @@ public:
       SPIRVBasicBlock *) = 0;
   virtual SPIRVInstruction *addLoopMergeInstr(SPIRVBasicBlock *MergeBB,
       SPIRVBasicBlock *ContinueBB, SPIRVBasicBlock *BB) = 0;
+  virtual SPIRVInstruction *addSelectionMergeInstr(SPIRVBasicBlock *MergeBB,
+      SPIRVBasicBlock *BB) = 0;
   virtual SPIRVInstruction *addReturnInst(SPIRVBasicBlock *) = 0;
   virtual SPIRVInstruction *addReturnValueInst(SPIRVValue *, SPIRVBasicBlock *)
     = 0;

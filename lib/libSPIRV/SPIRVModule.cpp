@@ -248,6 +248,8 @@ public:
       SPIRVBasicBlock *);
   virtual SPIRVInstruction *addLoopMergeInstr(SPIRVBasicBlock *MergeBB,
       SPIRVBasicBlock *ContinueBB, SPIRVBasicBlock *BB);
+  virtual SPIRVInstruction *addSelectionMergeInstr(SPIRVBasicBlock *MergeBB,
+      SPIRVBasicBlock *BB);
   virtual SPIRVInstruction *addCompositeExtractInst(SPIRVType *, SPIRVValue *,
       const std::vector<SPIRVWord>&, SPIRVBasicBlock *);
   virtual SPIRVInstruction *addCompositeInsertInst(SPIRVValue *Object,
@@ -947,6 +949,12 @@ SPIRVInstruction *
 SPIRVModuleImpl::addLoopMergeInstr(SPIRVBasicBlock *MergeBB,
     SPIRVBasicBlock *ContinueBB, SPIRVBasicBlock *BB) {
   return addInstruction(new SPIRVLoopMerge(MergeBB, ContinueBB, BB), BB);
+}
+
+SPIRVInstruction *
+SPIRVModuleImpl::addSelectionMergeInstr(SPIRVBasicBlock *MergeBB,
+    SPIRVBasicBlock *BB) {
+  return addInstruction(new SPIRVSelectionMerge(MergeBB, BB), BB);
 }
 
 SPIRVInstruction *

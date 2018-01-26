@@ -954,6 +954,44 @@ protected:
   SPIRVWord LoopControl;
 };
 
+class SPIRVSelectionMerge : public SPIRVInstruction {
+public:
+  static const Op OC = OpSelectionMerge;
+  // Complete constructor
+  SPIRVSelectionMerge(SPIRVBasicBlock *MergeBB, SPIRVBasicBlock *TheBB)
+    : SPIRVInstruction(3, OC, TheBB), MergeId(MergeBB->getId()), SelectionControl(0) {
+    validate();
+    assert(TheBB && "Invalid BB");
+  }
+  // Incomplete constructor
+  SPIRVSelectionMerge() : SPIRVInstruction(OC), MergeId(SPIRVID_INVALID),
+      SelectionControl(0) {
+    setHasNoId();
+    setHasNoType();
+  }
+
+  SPIRVValue *getMerge() const {
+    return getValue(MergeId);
+  }
+
+  SPIRVWord getSelectionControl() const {
+    return SelectionControl;
+  }
+
+protected:
+  _SPIRV_DEF_ENCDEC2(MergeId, SelectionControl)
+
+  void validate() const {
+    SPIRVInstruction::validate();
+    assert(WordCount == 3);
+    assert(OpCode == OC);
+    assert(getMerge()->isBasicBlock());
+  }
+
+  SPIRVId MergeId;
+  SPIRVWord SelectionControl;
+};
+
 class SPIRVCompare:public SPIRVInstTemplateBase {
 protected:
   void validate()const {
