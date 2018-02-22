@@ -418,14 +418,10 @@ public:
   SPIRVMemoryAccess() : Alignment(0), Volatile(0){}
 
   void MemoryAccessUpdate(const std::vector<SPIRVWord> &MemoryAccess) {
-    unsigned i = 0;
-    while (i < MemoryAccess.size()) {
-      if (MemoryAccess[i] == MemoryAccessVolatileMask)
-        Volatile = MemoryAccess[i++];
-      else if (MemoryAccess[i] == MemoryAccessAlignedMask) {
-        Alignment = MemoryAccess[i + 1];
-        i += 2;
-      }
+    if (MemoryAccess[0] & MemoryAccessVolatileMask)
+      Volatile = MemoryAccessVolatileMask;
+    if (MemoryAccess[0] & MemoryAccessAlignedMask) {
+        Alignment = MemoryAccess[1];
     }
   }
   SPIRVWord isVolatile() const { return Volatile; }

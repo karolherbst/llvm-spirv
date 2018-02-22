@@ -705,14 +705,14 @@ LLVMToSPIRV::transLLVMBuiltinFunctionCall(CallInst *CI, SPIRVBasicBlock *BB) {
   auto MangledName = F->getName();
 
   if (MangledName.startswith("llvm.memcpy")) {
-    std::vector<SPIRVWord> MemoryAccess;
+    std::vector<SPIRVWord> MemoryAccess = { 0 };
 
     if (isa<ConstantInt>(CI->getOperand(4)) &&
       dyn_cast<ConstantInt>(CI->getOperand(4))
       ->getZExtValue() == 1)
-      MemoryAccess.push_back(MemoryAccessVolatileMask);
+      MemoryAccess[0] |= MemoryAccessVolatileMask;
     if (isa<ConstantInt>(CI->getOperand(3))) {
-        MemoryAccess.push_back(MemoryAccessAlignedMask);
+        MemoryAccess[0] |= MemoryAccessAlignedMask;
         MemoryAccess.push_back(dyn_cast<ConstantInt>(CI->getOperand(3))
           ->getZExtValue());
     }
@@ -1049,10 +1049,10 @@ LLVMToSPIRV::transValueWithoutDecoration(Value *V, SPIRVBasicBlock *BB,
     return mapValue(V, BM->addForward(transType(V->getType())));
 
   if (StoreInst *ST = dyn_cast<StoreInst>(V)) {
-    std::vector<SPIRVWord> MemoryAccess;
+    std::vector<SPIRVWord> MemoryAccess = { 0 };
     if (ST->isVolatile())
-      MemoryAccess.push_back(MemoryAccessVolatileMask);
-    MemoryAccess.push_back(MemoryAccessAlignedMask);
+      MemoryAccess[0] |= MemoryAccessVolatileMask;
+    MemoryAccess[0] |= MemoryAccessAlignedMask;
     MemoryAccess.push_back(ST->getAlignment());
     return mapValue(V, BM->addStoreInst(
         transValue(ST->getPointerOperand(), BB),
@@ -1061,10 +1061,10 @@ LLVMToSPIRV::transValueWithoutDecoration(Value *V, SPIRVBasicBlock *BB,
   }
 
   if (LoadInst *LD = dyn_cast<LoadInst>(V)) {
-    std::vector<SPIRVWord> MemoryAccess;
+    std::vector<SPIRVWord> MemoryAccess = { 0 };
     if (LD->isVolatile())
-      MemoryAccess.push_back(MemoryAccessVolatileMask);
-    MemoryAccess.push_back(MemoryAccessAlignedMask);
+      MemoryAccess[0] |= MemoryAccessVolatileMask;
+    MemoryAccess[0] |= MemoryAccessAlignedMask;
     MemoryAccess.push_back(LD->getAlignment());
     return mapValue(V, BM->addLoadInst(
         transValue(LD->getPointerOperand(), BB),
