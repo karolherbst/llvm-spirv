@@ -175,13 +175,21 @@ static int convertSPIRVToLLVM() {
   }
 
   std::error_code EC;
+#if LLVM_VERSION >= 6000000
   ToolOutputFile Out(OutputFile.c_str(), EC, sys::fs::F_None);
+#else
+  tool_output_file Out(OutputFile.c_str(), EC, sys::fs::F_None);
+#endif
   if (EC) {
     errs() << "Fails to open output file: " << EC.message();
     return -1;
   }
 
+#if LLVM_VERSION >= 7000000
   WriteBitcodeToFile(*M, Out.os());
+#else
+  WriteBitcodeToFile(M, Out.os());
+#endif
   Out.keep();
   delete M;
   return 0;
@@ -246,13 +254,21 @@ static int regularizeLLVM() {
   }
 
   std::error_code EC;
+#if LLVM_VERSION >= 6000000
   ToolOutputFile Out(OutputFile.c_str(), EC, sys::fs::F_None);
+#else
+  tool_output_file Out(OutputFile.c_str(), EC, sys::fs::F_None);
+#endif
   if (EC) {
     errs() << "Fails to open output file: " << EC.message();
     return -1;
   }
 
+#if LLVM_VERSION >= 7000000
   WriteBitcodeToFile(*M, Out.os());
+#else
+  WriteBitcodeToFile(M.get(), Out.os());
+#endif
   Out.keep();
   return 0;
 }

@@ -1,5 +1,7 @@
 add_executable(llvm-spirv llvm-spirv.cpp)
 
+target_compile_definitions(llvm-spirv PRIVATE -DLLVM_VERSION=${LLVM_VERSION})
+
 target_include_directories(llvm-spirv PRIVATE ${LLVM_INCLUDE_DIRS})
 target_include_directories(llvm-spirv PRIVATE ${LLVM_SPIRV_INCLUDE_DIRS})
 

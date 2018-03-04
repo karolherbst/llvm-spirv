@@ -36,6 +36,8 @@ add_library(llvm_spirv SHARED
   TransOCLMD.cpp
 )
 
+target_compile_definitions(llvm_spirv PRIVATE -DLLVM_VERSION=${LLVM_VERSION})
+
 target_include_directories(llvm_spirv PRIVATE ${LLVM_INCLUDE_DIRS})
 target_include_directories(llvm_spirv PRIVATE ${LLVM_SPIRV_INCLUDE_DIRS})
 target_include_directories(llvm_spirv PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})

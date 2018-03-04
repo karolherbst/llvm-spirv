@@ -99,13 +99,21 @@ Value *removeCast(Value *V) {
 
 void saveLLVMModule(Module *M, const std::string &OutputFile) {
   std::error_code EC;
+#if LLVM_VERSION >= 6000000
   ToolOutputFile Out(OutputFile.c_str(), EC, sys::fs::F_None);
+#else
+  llvm::tool_output_file Out(OutputFile.c_str(), EC, sys::fs::F_None);
+#endif
   if (EC) {
     SPIRVDBG(errs() << "Fails to open output file: " << EC.message();)
     return;
   }
 
+#if LLVM_VERSION >= 7000000
   WriteBitcodeToFile(*M, Out.os());
+#else
+  WriteBitcodeToFile(M, Out.os());
+#endif
   Out.keep();
 }
 
