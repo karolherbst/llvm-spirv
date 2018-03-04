@@ -11,7 +11,7 @@ set(CMAKE_MODULE_PATH
 # Name & Version
 PROJECT(LLVM_SPIRV
   VERSION
-    0.1.0.0
+    0.2.0.0
   LANGUAGES
     CXX)
 
