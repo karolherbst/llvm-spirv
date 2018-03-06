@@ -985,8 +985,16 @@ SPIRVValue *LLVMToSPIRV::transValueWithoutDecoration(Value *V,
                                                      SPIRVBasicBlock *BB,
                                                      bool CreateForward) {
   if (auto LBB = dyn_cast<BasicBlock>(V)) {
+    Function *F = LBB->getParent();
+
+    // Translate first BB's which dominate this block:
+    DominatorTree &DT = getAnalysis<DominatorTreeWrapperPass>(*F).getDomTree();
+    for (auto &B : *F)
+      if ((&B != LBB) && DT.dominates(&B, LBB))
+        transValue(&B, nullptr);
+
     auto BF =
-        static_cast<SPIRVFunction *>(getTranslatedValue(LBB->getParent()));
+        static_cast<SPIRVFunction *>(getTranslatedValue(F));
     assert(BF && "Function not translated");
     BB = static_cast<SPIRVBasicBlock *>(mapValue(V, BM->addBasicBlock(BF)));
     BM->setName(BB, LBB->getName());
